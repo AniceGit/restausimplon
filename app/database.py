@@ -1,7 +1,21 @@
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel, create_engine, Session
+from app.crud.produit import creer_produit
+from app.schemas.produit import ProduitCreate
+
 
 DATABASE_URL = "sqlite:///./restausimplon.db"
 engine = create_engine(DATABASE_URL, echo=True)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+def create_produit():
+    with Session(engine) as session:
+        # Exemple de création d'un produit
+        produit_data = ProduitCreate(nom="Pizza", description="Une délicieuse pizza", prix=10.99, stock=100, categorie_id=1)
+        produit = creer_produit(produit_data, session)
+        print(produit)

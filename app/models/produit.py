@@ -17,3 +17,4 @@ class Produit(SQLModel, table=True):
 
     categorie: Optional["Categorie"] = Relationship(back_populates="produits")
     lignes_commande: List["LigneCommande"] = Relationship(back_populates="produit")
+
