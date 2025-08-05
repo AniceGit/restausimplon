@@ -14,7 +14,7 @@ def read_commandes(session: Session = Depends(get_session)):
     return get_all_commandes(session)
 
 @router.get("/{commande_id}", response_model=CommandeRead)
-def read_commande(commande_id: int, session: Session = Depends(get_session)):
+def read_commande_by_id(commande_id: int, session: Session = Depends(get_session)):
     return get_commande_by_id(commande_id, session)
 
 @router.post("/", response_model=CommandeRead)
@@ -22,8 +22,8 @@ def add_commande(commande: CommandeCreate, session: Session = Depends(get_sessio
     return create_commande(commande, session)
 
 @router.put("/{commande_id}", response_model=CommandeUpdate)
-def modify_commande(id: int, commande: CommandeCreate, session: Session = Depends(get_session)):
-    return update_commande(id, commande, session)
+def modify_commande(commande_id: int, commande: CommandeCreate, session: Session = Depends(get_session)):
+    return update_commande(commande_id, commande, session)
 
 @router.delete("/{commande_id}")
 def drop_commande(commande_id: int, session: Session = Depends(get_session)):
