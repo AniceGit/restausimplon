@@ -1,8 +1,7 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 #from app.schemas.produit import ProduitCreer, ProduitLu
 from app.models.produit import Produit
-from typing import List  
-
+from typing import List, Optional
 
 def get_all_produits(session: Session) -> List[Produit]:
     statement = select(Produit)
@@ -34,3 +33,23 @@ def modification_produit(produit_id: int, produit_data: dict, session: Session):
         session.commit()
         session.refresh(produit)
     return produit
+
+def rechercher_produits(
+    session: Session,
+    produit_id: Optional[int] = None,
+    prix: Optional[float] = None,
+    stock: Optional[int] = None
+) -> List[Produit]:
+    # Commencez par une requête de base
+    query = select(Produit)
+
+    # Ajoutez des filtres en fonction des paramètres fournis
+    if produit_id is not None:
+        query = query.where(Produit.id == produit_id)
+    if prix is not None:
+        query = query.where(Produit.prix == prix)
+    if stock is not None:
+        query = query.where(Produit.stock == stock)
+
+    # Exécutez la requête et retournez les résultats
+    return session.exec(query).all()

@@ -1,9 +1,10 @@
 from sqlmodel import SQLModel, create_engine, Session
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List
-from app.crud.produit import creer_produit, get_all_produits, suppression_produit, modification_produit
+from app.crud.produit import creer_produit, get_all_produits, suppression_produit, modification_produit, rechercher_produits
 from app.database import get_session
 from app.schemas.produit import ProduitRead, ProduitCreate, ProduitUpdate
+from typing import List, Optional
 
 router = APIRouter(prefix="/produits", tags=["Produits"])
 
@@ -31,3 +32,13 @@ def update_produit(produit_id: int, produit: ProduitUpdate, session: Session = D
     if updated_produit is None:
         raise HTTPException(status_code=404, detail="Produit non trouvé")
     return updated_produit
+
+@router.get("/search", response_model=List[ProduitRead])
+def recherche_produit(
+    produit_id: Optional[int] = Query(None),
+    prix: Optional[float] = Query(None),
+    stock: Optional[int] = Query(None),
+    session: Session = Depends(get_session)
+):
+    produits = rechercher_produits(session, produit_id, prix, stock)
+    return produits
