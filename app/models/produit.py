@@ -1,6 +1,6 @@
 from typing import Optional, List, TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, List
+
 
 if TYPE_CHECKING:
     from .categorie import Categorie

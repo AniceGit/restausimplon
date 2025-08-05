@@ -13,9 +13,6 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-def create_produit():
-    with Session(engine) as session:
-        # Exemple de création d'un produit
-        produit_data = ProduitCreate(nom="Pizza", description="Une délicieuse pizza", prix=10.99, stock=100, categorie_id=1)
-        produit = creer_produit(produit_data, session)
-        print(produit)
+
+
+
