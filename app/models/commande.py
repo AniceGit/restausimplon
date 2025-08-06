@@ -20,4 +20,4 @@ class Commande(SQLModel, table=True):
     statut: CommandeStatusEnum
 
     client: Optional["Client"] = Relationship(back_populates="commandes")
-    lignes_commande: List["LigneCommande"] = Relationship(back_populates="commande")
+    lignes_commande: List["LigneCommande"] = Relationship(back_populates="commande", cascade_delete=True)
