@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import create_db_and_tables
-from app.routers import produit
+from app.routers import produit, utilisateur
 
 app = FastAPI(title="RestauSimplon API")
 
@@ -10,6 +10,7 @@ def on_startup():
 
 
 app.include_router(produit.router)
+app.include_router(utilisateur.router)
 
 @app.get("/")
 def root():
