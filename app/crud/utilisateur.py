@@ -1,16 +1,19 @@
 from sqlmodel import Session, select
 from app.models.utilisateur import Utilisateur
-from app.schemas.utilisateur import UtilisateurCreate, UtilisateurRead
+from app.schemas.utilisateur import UtilisateurCreate, UtilisateurRead, UtilisateurUpdate
 from typing import List
 from typing import Optional
 from fastapi import HTTPException, status
 
 def get_all_utilisateurs(session: Session) -> List[Utilisateur]:
-    statement = select(Utilisateur)
+    statement = select(Utilisateur).where(Utilisateur.is_active == True)
     return session.exec(statement).all()
 
 def get_utilisateur_by_id(utilisateur_id: int, session: Session) -> Optional[Utilisateur]:
-    return session.get(Utilisateur, utilisateur_id)
+    utilisateur = session.get(Utilisateur, utilisateur_id)
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return utilisateur
 
 def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) -> Utilisateur:
     # Vérifie si l'utilisateur existe déjà
@@ -26,6 +29,28 @@ def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) ->
     # Crée l'utilisateur
     utilisateur = Utilisateur.model_validate(utilisateur_data)
     session.add(utilisateur)
+    session.commit()
+    session.refresh(utilisateur)
+    return utilisateur
+
+def update_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, session: Session) -> Utilisateur:
+    utilisateur = session.get(Utilisateur, utilisateur_id)
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+    for key, value in utilisateur_data.model_dump(exclude_unset=True).items():
+        setattr(utilisateur, key, value)
+
+    session.commit()
+    session.refresh(utilisateur)
+    return utilisateur
+
+def delete_utilisateur(utilisateur_id: int, session: Session) -> Utilisateur:
+    utilisateur = session.get(Utilisateur, utilisateur_id)
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+    utilisateur.is_active = False
     session.commit()
     session.refresh(utilisateur)
     return utilisateur

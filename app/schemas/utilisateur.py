@@ -18,6 +18,9 @@ class UtilisateurCreate(BaseModel):
     role: RoleEnum
     is_active: bool = True
 
+    class Config:
+        orm_mode = True
+
 class UtilisateurRead(BaseModel):
     id: int
     email: str
@@ -26,9 +29,12 @@ class UtilisateurRead(BaseModel):
 
     class Config:
         orm_mode = True
-# class UtilisateurUpdate(BaseModel):
-#     email: Optional[str] = None
-#     motdepasse: Optional[str] = None
-#     role: Optional[RoleEnum] = None
-#     is_active: Optional[bool] = None
+
+class UtilisateurUpdate(BaseModel):
+    email: Optional[str]
+    motdepasse: Optional[str]
+    role: Optional[RoleEnum]
+
+    class Config:
+        orm_mode = True
     
