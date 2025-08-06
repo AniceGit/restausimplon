@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 # Modèle table Ligne de commande (produit + quantité)
 class LigneCommande(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    commande_id: int = Field(foreign_key="commande.id")
+    commande_id: int = Field(foreign_key="commande.id", ondelete="CASCADE")
     produit_id: int = Field(foreign_key="produit.id")
     quantite: int = Field(ge=1)
     prix_unitaire: float = Field(gt=0)
