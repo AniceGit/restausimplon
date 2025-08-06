@@ -1,6 +1,5 @@
 from sqlmodel import SQLModel, create_engine, Session
-from app.crud.produit import creer_produit
-from app.schemas.produit import ProduitCreate
+
 
 
 DATABASE_URL = "sqlite:///./restausimplon.db"
@@ -12,7 +11,3 @@ def create_db_and_tables():
 def get_session():
     with Session(engine) as session:
         yield session
-
-
-
-
