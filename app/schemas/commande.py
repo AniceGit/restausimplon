@@ -18,11 +18,12 @@ class CommandeCreate(BaseModel):
     date_commande: datetime
     statut: CommandeStatusEnum
 
-    class Config:
-        orm_mode = True
 
 class CommandeUpdate(BaseModel):
     id: int
     client_id: Optional[int] = None
     date_commande: Optional[datetime] = None
     statut: Optional[CommandeStatusEnum] = None
+
+    class Config:
+        orm_mode = True

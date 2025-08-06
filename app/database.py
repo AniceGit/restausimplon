@@ -3,7 +3,6 @@ from app.crud.produit import creer_produit
 from app.schemas.produit import ProduitCreate
 
 
-
 DATABASE_URL = "sqlite:///./restausimplon.db"
 engine = create_engine(DATABASE_URL, echo=True)
 
