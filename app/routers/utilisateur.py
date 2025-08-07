@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from typing import List
+from app.core.security import get_password_hash
 
 from app.database import get_session
 from app.schemas.utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
@@ -30,3 +31,11 @@ def edit_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, s
 def remove_utilisateur(utilisateur_id: int, session: Session = Depends(get_session)):
     return delete_utilisateur(utilisateur_id, session)
 
+@router.post("/register", response_model=UtilisateurRead)
+def register_user(user: UtilisateurCreate, session: Session = Depends(get_session)):
+    db_user = Utilisateur.model_validate(user)
+    db_user.motdepasse = get_password_hash(user.motdepasse)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user

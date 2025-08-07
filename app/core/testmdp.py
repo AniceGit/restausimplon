@@ -9,4 +9,4 @@ def test_verify_password():
     assert verify_password("wrongpassword", hashed_password) == False
     print("Wrong password verification failed as expected.")
 
-test_verify_password( )
+test_verify_password()

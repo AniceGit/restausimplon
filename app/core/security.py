@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict, Any
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
@@ -36,19 +36,56 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def verify_token(token: str):
+def verify_token(token: str) -> bool:
+    """
+    Vérifie la validité d'un token JWT
+    
+    Args:
+        token (str): Le token JWT à vérifier
+    
+    Returns:
+        bool: True si le token est valide, False sinon
+    """
     try:
         # Décodez et vérifiez le token
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
+        
+        # Vérifiez que le token contient un subject (utilisateur)
+        email : str = payload.get("sub")
+        if email is None:
+            print("Token verification failed: No subject found")
+            return False
+            
         # Si le token est valide, vous pouvez accéder aux claims
         expiration_timestamp = payload.get("exp")
         if expiration_timestamp:
             expiration_time = datetime.fromtimestamp(expiration_timestamp)
             print(f"Token expires at: {expiration_time}")
-
+            
+            # Vérifiez que le token n'est pas expiré
+            if datetime.utcnow() > expiration_time:
+                print("Token verification failed: Token has expired")
+                return False
+                
         return True
+        
     except JWTError as e:
         # Gestion des erreurs : token invalide ou expiré
         print(f"Token verification failed: {e}")
         return False
+
+def decode_token(token: str) -> Optional[Dict[str, Any]]:
+    """
+    Décode un token JWT et retourne son payload si valide
+    
+    Args:
+        token (str): Le token JWT à décoder
+    
+    Returns:
+        Optional[Dict[str, Any]]: Le payload du token si valide, None sinon
+    """
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
