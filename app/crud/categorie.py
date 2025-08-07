@@ -43,6 +43,5 @@ def delete_categorie_by_id(id: int, session: Session) -> Categorie:
     if not db_categorie:
         raise HTTPException(status_code=404, detail="Catégorie non trouvée")    
     session.delete(db_categorie)
-    session.commit()
-    session.refresh(db_categorie)
-    return {'ok': True}
+    session.commit()    
+    return db_categorie
