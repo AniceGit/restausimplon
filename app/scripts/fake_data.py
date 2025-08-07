@@ -57,7 +57,7 @@ def create_fake_data():
                 session.add(produit)
         session.commit()
 
-        # Créer utilisateurs (clients)
+        # Créer utilisateurs
         roles_to_create = (
             [RoleEnum.admin] * 1 +
             [RoleEnum.employe] * 2 +
@@ -83,7 +83,7 @@ def create_fake_data():
         # Créer commandes et lignes de commandes
         produits = session.exec(select(Produit)).all()
 
-        # Ne garder que les clients pour créer des commandes
+        # On garde que les clients pour créer des commandes
         clients = [u for u in utilisateurs if u.role == RoleEnum.client]
 
         for _ in range(30):

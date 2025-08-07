@@ -54,7 +54,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(),session: Session = De
 def verify_token_route(token: str = Depends(oauth2_scheme)):
     try:
         print(f"Token reçu: {token}")
-        token_data = verify_token(token)  # Vérifie signature, expiration, "sub"
+        token_data = verify_token(token) 
         return {
             "message": "Token valide ✅",
             "email": token_data.email

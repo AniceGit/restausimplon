@@ -15,7 +15,6 @@ app.include_router(categorie.router)
 app.include_router(produit.router)
 app.include_router(utilisateur.router)
 app.include_router(auth.router)
-#app.include_router(client.router)
 app.include_router(commande.router)
 app.include_router(ligne_de_commande.router)
 

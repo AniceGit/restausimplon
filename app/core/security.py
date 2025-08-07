@@ -5,9 +5,9 @@ from passlib.context import CryptContext
 from app.schemas.auth import TokenData
 from fastapi.security import OAuth2PasswordBearer
 
-SECRET_KEY = "super-secret-key"  # À mettre dans .env ou config
+SECRET_KEY = "super-secret-key" 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+ACCESS_TOKEN_EXPIRE_MINUTES = 5
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
