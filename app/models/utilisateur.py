@@ -18,6 +18,6 @@ class Utilisateur(SQLModel, table=True):
     motdepasse: str  # Stocke le mot de passe haché
     role: RoleEnum
     is_active: bool = True
-    access_token: Optional[str] = Field(unique=True)# Stocke le token d'accès
-    refresh_token: Optional[str] = Field(unique=True) # Stocke le token de rafraîchissement
+   
+    
     client: Optional["Client"] = Relationship(back_populates="user", sa_relationship_kwargs={"uselist": False})

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from database import create_db_and_tables
+from app.database import create_db_and_tables
 from app.routers import produit
 from app.routers import utilisateur
 from app.routers import commande, ligne_de_commande

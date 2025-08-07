@@ -6,7 +6,6 @@ from app.models.commande import Commande, CommandeStatusEnum
 from app.models.ligne_de_commande import LigneCommande
 from app.crud.produit import creer_produit
 from app.schemas.produit import ProduitCreate, ProduitRead, ProduitUpdate
-from database import create_db_and_tables
 
 
 
