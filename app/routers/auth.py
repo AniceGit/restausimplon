@@ -18,13 +18,13 @@ from app.models.utilisateur import Utilisateur
 router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-@router.post("/token", response_model=Token)
+@router.post("/login", response_model=Token)
 async def login_for_access_token(
     email: str = Form(...),
     motdepasse: str = Form(...),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(Utilisateur)).filter(Utilisateur.email == email).first()
+    user = session.exec(select(Utilisateur).where(Utilisateur.email == email)).first()
     if not user or not verify_password(motdepasse, user.motdepasse):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -37,28 +37,10 @@ async def login_for_access_token(
     )
     refresh_token = create_refresh_token(data={"sub": user.email})
     
-    # Mettez à jour les tokens dans la base de données
-    user.access_token = access_token
-    user.refresh_token = refresh_token
-    session.add(user)
-    session.commit()
-    
+
     return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
 
-@router.post("/login", response_model=UtilisateurRead)
-def login_utilisateur(email: str, motdepasse: str, session: Session = Depends(get_session)):
-    # Recherchez l'utilisateur dans la base de données
-    utilisateur = session.exec(select(Utilisateur).where(Utilisateur.email == email)).first()
-    
-    # Vérifiez si l'utilisateur existe et si le mot de passe est correct
-    if not utilisateur or not verify_password(motdepasse, utilisateur.motdepasse):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    return utilisateur
+
 
 @router.get("/verify-token")
 async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):

@@ -1,8 +1,8 @@
 # app/routers/user.py
-from fastapi import APIRouter, Depends
-from sqlmodel import Session
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session, select
 from typing import List
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash,verify_password
 
 from app.database import get_session
 from app.schemas.utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
@@ -19,9 +19,9 @@ def read_utilisateurs(session: Session = Depends(get_session)):
 def read_utilisateur(utilisateur_id: int, session: Session = Depends(get_session)):
     return get_utilisateur_by_id(utilisateur_id, session)
 
-@router.post("/", response_model=UtilisateurRead)
-def add_utilisateur(utilisateur_data: UtilisateurCreate, session: Session = Depends(get_session)):
-    return create_utilisateur(session, utilisateur_data)
+# @router.post("/", response_model=UtilisateurRead)
+# def add_utilisateur(utilisateur_data: UtilisateurCreate, session: Session = Depends(get_session)):
+#     #return create_utilisateur(session, utilisateur_data)
 
 @router.put("/{utilisateur_id}", response_model=UtilisateurRead)
 def edit_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, session: Session = Depends(get_session)):
@@ -32,10 +32,5 @@ def remove_utilisateur(utilisateur_id: int, session: Session = Depends(get_sessi
     return delete_utilisateur(utilisateur_id, session)
 
 @router.post("/register", response_model=UtilisateurRead)
-def register_user(user: UtilisateurCreate, session: Session = Depends(get_session)):
-    db_user = Utilisateur.model_validate(user)
-    db_user.motdepasse = get_password_hash(user.motdepasse)
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-    return db_user
+def add_utilisateur(utilisateur_data: UtilisateurCreate, session: Session = Depends(get_session)):
+    return create_utilisateur(session, utilisateur_data)

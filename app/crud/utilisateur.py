@@ -4,7 +4,7 @@ from app.schemas.utilisateur import UtilisateurCreate, UtilisateurUpdate
 from typing import List
 from typing import Optional
 from fastapi import HTTPException, status
-from app.core.security import verify_password
+from app.core.security import verify_password, get_password_hash
 
 def get_all_utilisateurs(session: Session) -> List[Utilisateur]:
     statement = select(Utilisateur).where(Utilisateur.is_active == True)
@@ -29,10 +29,10 @@ def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) ->
 
     # Crée l'utilisateur
     utilisateur = Utilisateur.model_validate(utilisateur_data)
+    utilisateur.motdepasse = get_password_hash(utilisateur_data.motdepasse)
     session.add(utilisateur)
     session.commit()
     session.refresh(utilisateur)
-
     return utilisateur
 
 def update_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, session: Session) -> Utilisateur:
