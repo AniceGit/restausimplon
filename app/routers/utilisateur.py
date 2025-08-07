@@ -29,3 +29,4 @@ def edit_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, s
 @router.delete("/{utilisateur_id}", response_model=UtilisateurRead)
 def remove_utilisateur(utilisateur_id: int, session: Session = Depends(get_session)):
     return delete_utilisateur(utilisateur_id, session)
+

@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 
 SECRET_KEY = "secret-key-for-jwt"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 10
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -35,3 +35,20 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+def verify_token(token: str):
+    try:
+        # Décodez et vérifiez le token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        # Si le token est valide, vous pouvez accéder aux claims
+        expiration_timestamp = payload.get("exp")
+        if expiration_timestamp:
+            expiration_time = datetime.fromtimestamp(expiration_timestamp)
+            print(f"Token expires at: {expiration_time}")
+
+        return True
+    except JWTError as e:
+        # Gestion des erreurs : token invalide ou expiré
+        print(f"Token verification failed: {e}")
+        return False

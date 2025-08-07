@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from sqlmodel import Session
+from sqlmodel import Session,select
 from datetime import timedelta
 from app.database import get_session
 from app.schemas.auth import Token
@@ -47,3 +47,36 @@ async def login_for_access_token(
     session.commit()
 
     return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
+
+@router.post("/login", response_model=UtilisateurRead)
+def login_utilisateur(email: str, motdepasse: str, session: Session = Depends(get_session)):
+    # Recherchez l'utilisateur dans la base de données
+    utilisateur = session.exec(select(Utilisateur).where(Utilisateur.email == email)).first()
+
+    # Vérifiez si l'utilisateur existe et si le mot de passe est correct
+    if not utilisateur or not verify_password(motdepasse, utilisateur.motdepasse):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return utilisateur
+
+@router.get("/verify-token")
+def verify_token(token: str = Depends(oauth2_scheme)):
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is missing",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    is_valid = verify_token(token)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    return {"message": "Token is valid"}

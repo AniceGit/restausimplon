@@ -54,9 +54,6 @@ def rechercher_produits(
 
     # Exécutez la requête et retournez les résultats
     return session.exec(query).all()
-from sqlmodel import Session, select
-from app.models.produit import Produit
-from typing import List
 
 def get_all_produits(session: Session) -> List[Produit]:
     statement = select(Produit)
