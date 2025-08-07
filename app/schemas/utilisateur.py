@@ -13,17 +13,16 @@ class RoleEnum(str, Enum):
 #     is_active: bool = True
 
 class UtilisateurCreate(BaseModel):
-    email: str
+    email: Optional[EmailStr] = None
     motdepasse: str
     role: RoleEnum
     is_active: bool = True
 
     class Config:
         orm_mode = True
-
 class UtilisateurRead(BaseModel):
     id: int
-    email: str
+    email: Optional[EmailStr] = None
     role: RoleEnum
     is_active: bool
 
@@ -31,10 +30,9 @@ class UtilisateurRead(BaseModel):
         orm_mode = True
 
 class UtilisateurUpdate(BaseModel):
-    email: Optional[str]
-    motdepasse: Optional[str]
-    role: Optional[RoleEnum]
+    email: Optional[EmailStr] = None
+    motdepasse: Optional[str] = None
+    role: Optional[RoleEnum] = None
 
     class Config:
         orm_mode = True
-    
