@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import create_db_and_tables
-from app.routers import produit
+from app.routers import categorie, produit
 from app.routers import utilisateur
 from app.routers import commande, ligne_de_commande
 from app.routers import auth
@@ -12,6 +12,8 @@ def on_startup():
     create_db_and_tables()
 
 
+
+app.include_router(categorie.router)
 
 app.include_router(produit.router)
 app.include_router(utilisateur.router)
