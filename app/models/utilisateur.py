@@ -23,4 +23,4 @@ class Utilisateur(SQLModel, table=True):
     role: RoleEnum
     is_active: bool = True
 
-    commandes: List["Commande"] = Relationship(back_populates="client")
+    commandes: List["Commande"] = Relationship(back_populates="utilisateur")
