@@ -22,7 +22,7 @@ class Utilisateur(SQLModel, table=True):
     motdepasse: str  # Stocke le mot de passe haché
     role: RoleEnum
     is_active: bool = True
-
+    #access_token: Optional[str] = Field(default=None)
     refresh_token: Optional[str] = Field(default=None)
     commandes: List["Commande"] = Relationship(back_populates="utilisateur")
 

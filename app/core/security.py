@@ -37,15 +37,6 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 def verify_token(token: str) -> bool:
-    """
-    Vérifie la validité d'un token JWT
-    
-    Args:
-        token (str): Le token JWT à vérifier
-    
-    Returns:
-        bool: True si le token est valide, False sinon
-    """
     try:
         # Décodez et vérifiez le token
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -73,19 +64,3 @@ def verify_token(token: str) -> bool:
         # Gestion des erreurs : token invalide ou expiré
         print(f"Token verification failed: {e}")
         return False
-
-def decode_token(token: str) -> Optional[Dict[str, Any]]:
-    """
-    Décode un token JWT et retourne son payload si valide
-    
-    Args:
-        token (str): Le token JWT à décoder
-    
-    Returns:
-        Optional[Dict[str, Any]]: Le payload du token si valide, None sinon
-    """
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except JWTError:
-        return None

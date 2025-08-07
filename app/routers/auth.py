@@ -18,15 +18,6 @@ from app.models.utilisateur import Utilisateur
 router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-@router.post("/register", response_model=UtilisateurRead)
-def register_user(user: UtilisateurCreate, session: Session = Depends(get_session)):
-    db_user = Utilisateur.model_validate(user)
-    db_user.motdepasse = get_password_hash(user.motdepasse)
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-    return db_user
-
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     email: str = Form(...),
