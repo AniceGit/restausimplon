@@ -5,7 +5,7 @@ from enum import Enum
 from datetime import datetime
 
 if TYPE_CHECKING:
-    from .client import Client
+    from .utilisateur import Utilisateur
     from .ligne_de_commande import LigneCommande
 
 class CommandeStatusEnum(str, Enum):
@@ -15,9 +15,9 @@ class CommandeStatusEnum(str, Enum):
 #Modèle table commande
 class Commande(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    client_id: int = Field(foreign_key="client.id")
+    utilisateur_id: int = Field(foreign_key="utilisateur.id")
     date_commande: datetime
     statut: CommandeStatusEnum
 
-    client: Optional["Client"] = Relationship(back_populates="commandes")
+    utilisateur: Optional["Utilisateur"] = Relationship(back_populates="commandes")
     lignes_commande: List["LigneCommande"] = Relationship(back_populates="commande", cascade_delete=True)
