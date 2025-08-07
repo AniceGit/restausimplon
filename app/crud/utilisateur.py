@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from app.models.utilisateur import Utilisateur
-from app.schemas.utilisateur import UtilisateurCreate, UtilisateurRead, UtilisateurUpdate
+from app.schemas.utilisateur import UtilisateurCreate, UtilisateurUpdate
 from typing import List
 from typing import Optional
 from fastapi import HTTPException, status
@@ -32,6 +32,7 @@ def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) ->
     session.add(utilisateur)
     session.commit()
     session.refresh(utilisateur)
+
     return utilisateur
 
 def update_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, session: Session) -> Utilisateur:
