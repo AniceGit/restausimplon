@@ -11,4 +11,4 @@ class Categorie(SQLModel, table=True):
     name: str = Field(unique=True) 
     description: Optional[str] = None
 
-    produits: List[Produit] = Relationship(back_populates="categorie")
+    produits: List["Produit"] = Relationship(back_populates="categorie")
