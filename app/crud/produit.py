@@ -41,10 +41,9 @@ def rechercher_produits(
     prix: Optional[float] = None,
     stock: Optional[int] = None
 ) -> List[Produit]:
-    # Commencez par une requête de base
+
     query = select(Produit)
 
-    # Ajoutez des filtres en fonction des paramètres fournis
     if produit_id is not None:
         query = query.where(Produit.id == produit_id)
     if prix is not None:
@@ -52,7 +51,6 @@ def rechercher_produits(
     if stock is not None:
         query = query.where(Produit.stock == stock)
 
-    # Exécutez la requête et retournez les résultats
     return session.exec(query).all()
 
 def get_all_produits(session: Session) -> List[Produit]:
