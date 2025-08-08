@@ -20,17 +20,17 @@ def create_fake_data():
     with Session(engine) as session:
         # Créer catégories
         categories = [
-            {"name": "Entrées", "description": "Délicieuses entrées"},
-            {"name": "Plats principaux", "description": "Repas copieux"},
-            {"name": "Desserts", "description": "Finissez en beauté"},
-            {"name": "Boissons", "description": "Boissons fraîches et chaudes"},
-            {"name": "Pizzas", "description": "Pizzas artisanales"},
-            {"name": "Burgers", "description": "Burgers maison"}
+            {"nom": "Entrées", "description": "Délicieuses entrées"},
+            {"nom": "Plats principaux", "description": "Repas copieux"},
+            {"nom": "Desserts", "description": "Finissez en beauté"},
+            {"nom": "Boissons", "description": "Boissons fraîches et chaudes"},
+            {"nom": "Pizzas", "description": "Pizzas artisanales"},
+            {"nom": "Burgers", "description": "Burgers maison"}
         ]
         for cat in categories:
-            existing = session.exec(select(Categorie).where(Categorie.name == cat["name"])).first()
+            existing = session.exec(select(Categorie).where(Categorie.nom == cat["nom"])).first()
             if not existing:
-                session.add(Categorie(name=cat["name"], description=cat["description"]))
+                session.add(Categorie(name=cat["nom"], description=cat["description"]))
         session.commit()
 
         # Créer produits
@@ -43,7 +43,7 @@ def create_fake_data():
             "Burgers": ["Cheeseburger", "Double bacon burger", "Veggie burger"]
         }
 
-        categories = {c.name: c.id for c in session.exec(select(Categorie)).all()}
+        categories = {c.nom: c.id for c in session.exec(select(Categorie)).all()}
 
         for cat_name, produits in produits_par_categorie.items():
             for nom in produits:

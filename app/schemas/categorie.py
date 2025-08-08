@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 class CategorieCreate(BaseModel):    
-    name: str = Field(..., max_length=10)
+    nom: str = Field(..., max_length=10)
     description: Optional[str] = Field(..., max_length=250)
 
     class Config:
@@ -12,7 +12,7 @@ class CategorieCreate(BaseModel):
 
 class CategorieRead(BaseModel):
     id: int
-    name: str
+    nom: str
     description: Optional[str]
 
     class Config:
@@ -22,7 +22,7 @@ class CategorieRead(BaseModel):
 
 class CategorieUpdate(BaseModel):
     id: int
-    name: str = Field(..., max_length=10)
+    nom: str = Field(..., max_length=10)
     description: Optional[str] = Field(..., max_length=250)
 
     class Config:
@@ -32,7 +32,7 @@ class CategorieUpdate(BaseModel):
 
 class CategorieDelete(BaseModel):
     id: int
-    name: str
+    nom: str
     description: Optional[str]
 
     class Config:

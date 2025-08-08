@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 # Modèle de la table Categorie (catégories de menu)
 class Categorie(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(unique=True) 
+    nom: str = Field(unique=True) 
     description: Optional[str] = None
 
     produits: List["Produit"] = Relationship(back_populates="categorie")
