@@ -19,8 +19,10 @@ class Utilisateur(SQLModel, table=True):
     adresse: str
     telephone: str
     email: str = Field(unique=True)
-    motdepasse: str
+    motdepasse: str  # Stocke le mot de passe haché
     role: RoleEnum
     is_active: bool = True
 
+
     commandes: List["Commande"] = Relationship(back_populates="utilisateur")
+

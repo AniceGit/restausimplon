@@ -23,7 +23,6 @@ class UtilisateurCreate(BaseModel):
 
     class Config:
         orm_mode = True
-
 class UtilisateurRead(BaseModel):
     id: int
     email: str
@@ -48,4 +47,3 @@ class UtilisateurUpdate(BaseModel):
 
     class Config:
         orm_mode = True
-    

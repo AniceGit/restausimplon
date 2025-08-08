@@ -1,7 +1,7 @@
-from sqlmodel import Session, select, or_
-#from app.schemas.produit import ProduitCreer, ProduitLu
+from sqlmodel import Session, select
 from app.models.produit import Produit
 from typing import List, Optional
+from fastapi import HTTPException
 
 def get_all_produits(session: Session) -> List[Produit]:
     statement = select(Produit)
@@ -17,21 +17,22 @@ def creer_produit(produit, session: Session):
 
     return db_produit
 
-def suppression_produit(produit_id, session: Session):
+def suppression_produit(produit_id: int, session: Session):
     produit = session.get(Produit, produit_id)
-    if produit:
-        session.delete(produit)
-        session.commit()
+    if not produit:
+        raise HTTPException(status_code=404, detail="Produit non trouvé")
+    session.delete(produit)
+    session.commit()
     return produit
 
 def modification_produit(produit_id: int, produit_data: dict, session: Session):
-
     produit = session.get(Produit, produit_id)
-    if produit:
-        for key, value in produit_data.items():
-            setattr(produit, key, value)
-        session.commit()
-        session.refresh(produit)
+    if not produit:
+        raise HTTPException(status_code=404, detail="Produit non trouvé")
+    for key, value in produit_data.items():
+        setattr(produit, key, value)
+    session.commit()
+    session.refresh(produit)
     return produit
 
 def rechercher_produits(
@@ -53,9 +54,6 @@ def rechercher_produits(
 
     # Exécutez la requête et retournez les résultats
     return session.exec(query).all()
-from sqlmodel import Session, select
-from app.models.produit import Produit
-from typing import List
 
 def get_all_produits(session: Session) -> List[Produit]:
     statement = select(Produit)

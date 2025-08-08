@@ -5,6 +5,7 @@ from app.core.security import get_password_hash
 from typing import List
 from typing import Optional
 from fastapi import HTTPException, status
+from app.core.security import verify_password, get_password_hash
 
 def get_all_utilisateurs(session: Session) -> List[Utilisateur]:
     statement = select(Utilisateur).where(Utilisateur.is_active == True)
@@ -30,10 +31,10 @@ def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) ->
     # Crée l'utilisateur
     utilisateur = Utilisateur.model_validate(utilisateur_data)
     utilisateur.motdepasse=get_password_hash(utilisateur_data.motdepasse)
+    utilisateur.motdepasse = get_password_hash(utilisateur_data.motdepasse)
     session.add(utilisateur)
     session.commit()
     session.refresh(utilisateur)
-
     return utilisateur
 
 def update_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, session: Session) -> Utilisateur:
@@ -58,3 +59,8 @@ def delete_utilisateur(utilisateur_id: int, session: Session) -> Utilisateur:
     session.refresh(utilisateur)
     return utilisateur
 
+def login_utilisateur(email: str, motdepasse: str, session: Session) -> Utilisateur:
+    utilisateur = session.exec(select(Utilisateur).where(Utilisateur.email == email)).first()
+    if not utilisateur or not verify_password(motdepasse, utilisateur.motdepasse):
+        raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
+    return utilisateur

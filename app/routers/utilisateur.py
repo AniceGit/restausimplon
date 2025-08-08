@@ -1,7 +1,8 @@
 # app/routers/user.py
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
+from sqlmodel import Session, select
 from typing import List
+from app.core.security import get_password_hash,verify_password
 
 from app.database import get_session
 from app.schemas.utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
@@ -37,3 +38,7 @@ def edit_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, s
 @router.delete("/{utilisateur_id}", response_model=UtilisateurRead)
 def remove_utilisateur(utilisateur_id: int, session: Session = Depends(get_session)):
     return delete_utilisateur(utilisateur_id, session)
+
+@router.post("/register", response_model=UtilisateurRead)
+def add_utilisateur(utilisateur_data: UtilisateurCreate, session: Session = Depends(get_session)):
+    return create_utilisateur(session, utilisateur_data)
