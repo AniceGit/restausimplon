@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 from app.models.utilisateur import Utilisateur
 from app.schemas.utilisateur import UtilisateurCreate, UtilisateurUpdate
+from app.core.security import get_password_hash
 from typing import List
 from typing import Optional
 from fastapi import HTTPException, status

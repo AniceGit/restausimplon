@@ -9,11 +9,15 @@ class RoleEnum(str, Enum):
 
 class UtilisateurCreate(BaseModel):
     email: EmailStr
-    nom: str = Field(..., min_length=2, max_length=50, description="Nom de l'utilisateur")
-    prenom: str = Field(..., min_length=2, max_length=20, description="Prénom de l'utilisateur")
-    adresse: str = Field(..., min_length=5, max_length=100, description="Adresse de l'utilisateur")
-    telephone: str = Field(..., min_length=10, max_length=15, description="Numéro de téléphone de l'utilisateur")
-    motdepasse: str = Field(..., min_length=8, max_length=15, description="Mot de passe de l'utilisateur")
+    nom: str = Field(..., min_length=2)
+    prenom: str = Field(..., min_length=2)
+    adresse: str = Field()
+    telephone: str = Field(
+        ..., 
+        pattern=r"^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$",
+        description="Numéro français valide"
+    )
+    motdepasse: str = Field(..., min_length=8)
     role: RoleEnum
     is_active: bool = True
     

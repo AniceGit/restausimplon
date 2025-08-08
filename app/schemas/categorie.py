@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class CategorieCreate(BaseModel):    
-    name: str
-    description: Optional[str]
+    name: str = Field(..., max_length=10)
+    description: Optional[str] = Field(..., max_length=250)
 
     class Config:
         orm_mode = True
@@ -22,8 +22,8 @@ class CategorieRead(BaseModel):
 
 class CategorieUpdate(BaseModel):
     id: int
-    name: str
-    description: Optional[str]
+    name: str = Field(..., max_length=10)
+    description: Optional[str] = Field(..., max_length=250)
 
     class Config:
         orm_mode = True
