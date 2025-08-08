@@ -18,6 +18,7 @@ class Commande(SQLModel, table=True):
     utilisateur_id: int = Field(foreign_key="utilisateur.id")
     date_commande: datetime
     statut: CommandeStatusEnum
+    prix_total: float = Field(gt=0)
 
     utilisateur: Optional["Utilisateur"] = Relationship(back_populates="commandes")
     lignes_commande: List["LigneCommande"] = Relationship(back_populates="commande", cascade_delete=True)
