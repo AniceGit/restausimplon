@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.database import create_db_and_tables
 from app.routers import categorie, produit
-from app.routers import utilisateur
+from app.routers import utilisateur, auth
 from app.routers import commande, ligne_de_commande
 from app.routers import auth
 
@@ -17,7 +17,7 @@ app.include_router(categorie.router)
 
 app.include_router(produit.router)
 app.include_router(utilisateur.router)
-#app.include_router(client.router)
+app.include_router(auth.router)
 app.include_router(commande.router)
 app.include_router(ligne_de_commande.router)
 app.include_router(auth.router)

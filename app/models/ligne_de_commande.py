@@ -13,6 +13,7 @@ class LigneCommande(SQLModel, table=True):
     produit_id: int = Field(foreign_key="produit.id")
     quantite: int = Field(ge=1)
     prix_unitaire: float = Field(gt=0)
+    prix_total_ligne: float = Field(gt=0)
 
     commande: Optional["Commande"] = Relationship(back_populates="lignes_commande")
     produit: Optional["Produit"] = Relationship(back_populates="lignes_commande")

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel,Field, EmailStr
 from enum import Enum
 from typing import Optional
 
@@ -7,18 +7,13 @@ class RoleEnum(str, Enum):
     employe = "employe"
     client = "client"
 
-# class UtilisateurBase(BaseModel):
-#     email: EmailStr
-#     role: RoleEnum
-#     is_active: bool = True
-
 class UtilisateurCreate(BaseModel):
-    email: str
-    nom: str
-    prenom: str
+    email: EmailStr
+    nom: str = Field(..., min_length=2)
+    prenom: str = Field(..., min_length=2)
     adresse: str
     telephone: str
-    motdepasse: str
+    motdepasse: str = Field(..., min_length=8)
     role: RoleEnum
     is_active: bool = True
 
