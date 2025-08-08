@@ -11,8 +11,12 @@ class UtilisateurCreate(BaseModel):
     email: EmailStr
     nom: str = Field(..., min_length=2)
     prenom: str = Field(..., min_length=2)
-    adresse: str
-    telephone: str
+    adresse: str = Field()
+    telephone: str = Field(
+        ..., 
+        pattern=r"^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$",
+        description="Numéro français valide"
+    )
     motdepasse: str = Field(..., min_length=8)
     role: RoleEnum
     is_active: bool = True

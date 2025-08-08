@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 from app.models.utilisateur import Utilisateur
 from app.schemas.utilisateur import UtilisateurCreate, UtilisateurUpdate
+from app.core.security import get_password_hash
 from typing import List
 from typing import Optional
 from fastapi import HTTPException, status
@@ -28,6 +29,7 @@ def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) ->
 
     # Crée l'utilisateur
     utilisateur = Utilisateur.model_validate(utilisateur_data)
+    utilisateur.motdepasse=get_password_hash(utilisateur_data.motdepasse)
     session.add(utilisateur)
     session.commit()
     session.refresh(utilisateur)
