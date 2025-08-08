@@ -30,7 +30,6 @@ def create_utilisateur(session: Session, utilisateur_data: UtilisateurCreate) ->
 
     # Crée l'utilisateur
     utilisateur = Utilisateur.model_validate(utilisateur_data)
-    utilisateur.motdepasse=get_password_hash(utilisateur_data.motdepasse)
     utilisateur.motdepasse = get_password_hash(utilisateur_data.motdepasse)
     session.add(utilisateur)
     session.commit()
