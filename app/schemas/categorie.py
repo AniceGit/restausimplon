@@ -21,7 +21,6 @@ class CategorieRead(BaseModel):
 
 
 class CategorieUpdate(BaseModel):
-    id: int
     name: str = Field(..., max_length=10)
     description: Optional[str] = Field(..., max_length=250)
 
