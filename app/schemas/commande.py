@@ -23,9 +23,7 @@ class CommandeCreate(BaseModel):
 
 class CommandeUpdate(BaseModel):
     utilisateur_id: Optional[int] = Field(None, gt=0, description="Nouvel ID utilisateur")
-    date_commande: Optional[datetime] = Field(None, description="Nouvelle date de commande")
     statut: Optional[CommandeStatusEnum] = Field(None, description="Nouveau statut actuel de la commande")
-    prix_total: Optional[float] = Field(None, gt=0, description="Nouveau prix total de la commande")
 
     class Config:
         orm_mode = True

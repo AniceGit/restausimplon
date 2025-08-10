@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 from typing import List
 from app.models.commande import Commande
+from app.models.ligne_de_commande import LigneCommande
 from app.schemas.commande import CommandeCreate
 from fastapi import HTTPException
 from sqlalchemy.orm import selectinload
@@ -23,9 +24,15 @@ def update_commande(id: int, commande: Commande, session: Session) -> Commande:
     if not db_commande:
         raise HTTPException(status_code=404, detail="Commande non trouvée")
     
-    update_data = commande.model_dump(exclude={"id"})
+    update_data = commande.model_dump(exclude={"id", "prix_total"})
     for key, value in update_data.items():
         setattr(db_commande, key, value)
+
+    statement_lignes = select(LigneCommande).where(LigneCommande.commande_id == id)
+    lignes = session.exec(statement_lignes).all()
+    
+    prix_total = round(sum(ligne.prix_total_ligne for ligne in lignes), 2)
+    db_commande.prix_total = prix_total
 
     session.add(db_commande)
     session.commit()
