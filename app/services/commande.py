@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from typing import List
 from app.models.commande import Commande
 from app.models.ligne_de_commande import LigneCommande
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.schemas.commande import CommandeCreate
 from app.crud.ligne_de_commande import get_ligne_commande_by_id, create_ligne_commande
 from app.schemas.ligne_de_commande import LigneCommandeCreateWithoutCommandId, LigneCommandeCreate
@@ -53,7 +53,10 @@ def get_commandes_by_utilisateur_id(utilisateur_id: int, session: Session) -> Li
 
 # consulter les commandes par date - à améliorer
 def get_commandes_by_date(date_commande: datetime, session: Session) -> List[Commande]:
-    statement = select(Commande).where(Commande.date_commande == date_commande).options(selectinload(Commande.lignes_commande))
+    debut_jour = datetime(date_commande.year, date_commande.month, date_commande.day)
+    fin_jour = debut_jour + timedelta(days=1)
+
+    statement = select(Commande).where(Commande.date_commande >= debut_jour, Commande.date_commande < fin_jour).options(selectinload(Commande.lignes_commande))
     commande = session.exec(statement).all()
     if not commande:
         raise HTTPException(status_code=404, detail="Aucune commande trouvée pour cette date")
