@@ -57,9 +57,3 @@ def delete_utilisateur(utilisateur_id: int, session: Session) -> Utilisateur:
     session.commit()
     session.refresh(utilisateur)
     return utilisateur
-
-def login_utilisateur(email: str, motdepasse: str, session: Session) -> Utilisateur:
-    utilisateur = session.exec(select(Utilisateur).where(Utilisateur.email == email)).first()
-    if not utilisateur or not verify_password(motdepasse, utilisateur.motdepasse):
-        raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
-    return utilisateur

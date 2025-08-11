@@ -21,7 +21,7 @@ def get_ligne_commande_by_id(id: int, session: Session) -> LigneCommande:
 
 def create_ligne_commande(ligne_commande: LigneCommandeCreate, session: Session) -> LigneCommande:
     db_ligne_commande = LigneCommande(**ligne_commande.model_dump())
-    prix_total_ligne = db_ligne_commande.quantite * db_ligne_commande.prix_unitaire
+    prix_total_ligne = round(db_ligne_commande.quantite * db_ligne_commande.prix_unitaire, 2)
     print(prix_total_ligne)
     db_ligne_commande.prix_total_ligne = prix_total_ligne
 
@@ -50,7 +50,7 @@ def update_ligne_commande(id: int, ligne_commande: LigneCommande, session: Sessi
     old_prix_total_ligne = db_ligne_commande.prix_total_ligne
 
     update_data = ligne_commande.model_dump(exclude={"id"})
-    prix_total_ligne = update_data["quantite"] * update_data["prix_unitaire"]
+    prix_total_ligne = round(update_data["quantite"] * update_data["prix_unitaire"], 2)
     print(prix_total_ligne)
     update_data["prix_total_ligne"] = prix_total_ligne
     for key, value in update_data.items():
