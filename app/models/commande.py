@@ -14,8 +14,8 @@ class CommandeStatusEnum(str, Enum):
     servie = "Servie"
 #Modèle table commande
 class Commande(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    utilisateur_id: int = Field(foreign_key="utilisateur.id")
+    id: Optional[int] = Field(gt=0, default=None, primary_key=True)
+    utilisateur_id: int = Field(gt=0, foreign_key="utilisateur.id")
     date_commande: datetime
     statut: CommandeStatusEnum
     prix_total: float = Field(gt=0)

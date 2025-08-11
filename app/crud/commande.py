@@ -3,27 +3,20 @@ from typing import List
 from app.models.commande import Commande
 from app.schemas.commande import CommandeCreate
 from fastapi import HTTPException
+from sqlalchemy.orm import selectinload
 
 
 def get_all_commandes(session: Session) -> List[Commande]:
-    statement = select(Commande)
+    statement = select(Commande).options(selectinload(Commande.lignes_commande))
     return session.exec(statement).all()
 
 
 def get_commande_by_id(id: int, session: Session) -> Commande:
-    commande = session.get(Commande, id)
-    if not commande:
-        raise HTTPException(status_code=404, detail="Commande non trouvée")
-    return commande
-
-
-def create_commande(commande: CommandeCreate, session: Session) -> Commande:
-    db_commande = Commande(**commande.model_dump())
-    session.add(db_commande)
-    session.commit()
-    session.refresh(db_commande)
-    return db_commande
-
+    statement = select(Commande).where(Commande.id == id).options(selectinload(Commande.lignes_commande))
+    result = session.exec(statement).first()
+    if not result:
+        raise HTTPException(status_code=404, detail="Commande non trouvée pour cet id")
+    return result
 
 def update_commande(id: int, commande: Commande, session: Session) -> Commande:
     db_commande = session.get(Commande, id)
@@ -37,7 +30,11 @@ def update_commande(id: int, commande: Commande, session: Session) -> Commande:
     session.add(db_commande)
     session.commit()
     session.refresh(db_commande)
-    return db_commande
+    
+    statement = select(Commande).where(Commande.id == id).options(selectinload(Commande.lignes_commande))
+    full_commande = session.exec(statement).one()
+
+    return full_commande
 
 
 def delete_commande(id: int, session: Session):
@@ -46,4 +43,4 @@ def delete_commande(id: int, session: Session):
         raise HTTPException(status_code=404, detail="Commande non trouvée")
     session.delete(commande)
     session.commit()
-    return {"ok": True}
+    return f"La commande {id} a été supprimée"
