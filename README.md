@@ -36,7 +36,7 @@ Ouvrez votre terminal de VS Code ou votre invite de commandes et utilisez la com
 
 Après avoir cloné le dépôt, vous devez vous déplacer dans le dossier qui vient d'être créé pour pouvoir travailler sur le projet en utilisant la commande "cd restausimplon" dans votre terminal de VS Code.
 
-Le projet nécessite l'installation des dépendences pour pouvoir fonctionner. Ces dernières sont listées dans un fichier "requirements.txt" présent dans le dossier à la racine du projet.
+Le projet nécessite l'installation des dépendences pour pouvoir fonctionner. Ces dernières sont listées dans un fichier "requirements.txt" présent dans le dossier à la racine du projet. Pour ce faire, dans le terminal de VS Code de votre environnement virtuel, vous utilisez la commande suivante : "pip install -r requirements.txt".
 
 Une fois les dépendances installées, vous pouvez lancer le serveur Uvicorn avec la commande "uvicorn app.main:app --reload" dans votre terminal de VS Code. Un fichier "restausimplon.sql" sera créé dans le dossier à la racine du projet. Ensuite, sur votre navigateur web, vous tapez l'adresse URL suivante : http://127.0.0.1:8000/docs/ qui vous dirigera vers l'interface Swagger/OpenAPI de l'API RestauSimplon.
 
