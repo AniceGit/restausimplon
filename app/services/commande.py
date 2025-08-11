@@ -21,7 +21,7 @@ def create_commande_with_lignes_and_utilisateur(commande: CommandeCreate, lignes
     session.flush()
 
     for ligne_commande in lignes_commande:
-        prix_total_ligne = ligne_commande.quantite * ligne_commande.prix_unitaire
+        prix_total_ligne = round(ligne_commande.quantite * ligne_commande.prix_unitaire, 2)
         prix_total += prix_total_ligne
         
         data_ligne_commande = ligne_commande.model_dump()
