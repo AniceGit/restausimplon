@@ -20,8 +20,18 @@ def read_utilisateurs(_: Utilisateur = Depends(require_admin),session: Session =
     return get_all_utilisateurs(session)
 
 @router.get("/{utilisateur_id}", response_model=UtilisateurRead)
-def read_utilisateur(utilisateur_id: int, session: Session = Depends(get_session)):
-    return get_utilisateur_by_id(utilisateur_id, session)
+def read_utilisateur(utilisateur_id: int, session: Session = Depends(get_session),current_user: Utilisateur = Depends(get_current_user)):
+    # Si utilisateur non admin et qu'il essaie d'accéder à un profil autre que le sien
+    if current_user.role != "admin" and current_user.id != utilisateur_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail="Accès refusé : vous ne pouvez consulter que votre propre profil."
+        )
+    utilisateur = session.get(Utilisateur, utilisateur_id)
+
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return utilisateur
 
 #Fonction à revoir, néanmoins réservé aux admin
 @router.post("/", response_model=UtilisateurRead)
@@ -31,14 +41,39 @@ def add_utilisateur(utilisateur_data: UtilisateurCreate, session: Session = Depe
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accès refusé")
     return create_utilisateur(session, utilisateur_data)
 
+#update de tous les comptes autorisé que pour l'admin et l'utilisateur que sur son propre compte
 @router.put("/{utilisateur_id}", response_model=UtilisateurRead)
-def edit_utilisateur(utilisateur_id: int, utilisateur_data: UtilisateurUpdate, session: Session = Depends(get_session)):
+def edit_utilisateur(
+    utilisateur_id: int,
+    utilisateur_data: UtilisateurUpdate,
+    session: Session = Depends(get_session),
+    current_user: Utilisateur = Depends(get_current_user)
+):
+    # Vérifier si l'utilisateur existe
+    utilisateur = session.get(Utilisateur, utilisateur_id)
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+    # Autorisation : admin ou utilisateur lui-même
+    if current_user.role != "admin" and current_user.id != utilisateur_id:
+        raise HTTPException(status_code=403, detail="Accès refusé")
+
+    # Appeler la fonction update (implémente ta logique dans update_utilisateur)
     return update_utilisateur(utilisateur_id, utilisateur_data, session)
 
+#suppression de tous les comptes autorisé que pour l'admin et l'utilisateur que sur son propre compte
 @router.delete("/{utilisateur_id}", response_model=UtilisateurRead)
-def remove_utilisateur(utilisateur_id: int, session: Session = Depends(get_session)):
-    return delete_utilisateur(utilisateur_id, session)
+def remove_utilisateur(
+    utilisateur_id: int,
+    session: Session = Depends(get_session),
+    current_user: Utilisateur = Depends(get_current_user)
+):
+    utilisateur = session.get(Utilisateur, utilisateur_id)
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
-@router.post("/register", response_model=UtilisateurRead)
-def add_utilisateur(utilisateur_data: UtilisateurCreate, session: Session = Depends(get_session)):
-    return create_utilisateur(session, utilisateur_data)
+    # Autorisation : admin ou utilisateur lui-même
+    if current_user.role != "admin" and current_user.id != utilisateur_id:
+        raise HTTPException(status_code=403, detail="Accès refusé")
+
+    return delete_utilisateur(utilisateur_id, session)

@@ -7,7 +7,8 @@ from app.models.utilisateur import Utilisateur, RoleEnum
 from app.schemas.auth import Token
 from app.schemas.utilisateur import UtilisateurCreate, UtilisateurRead
 from app.database import get_session
-from app.core.security import get_password_hash,verify_password,create_access_token,create_refresh_token,ACCESS_TOKEN_EXPIRE_MINUTES, verify_token, oauth2_scheme
+from app.core.security import get_password_hash,verify_password,create_access_token,create_refresh_token, verify_token, oauth2_scheme
+from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -41,7 +42,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(),session: Session = De
     if not user or not verify_password(form_data.password, user.motdepasse):
         raise HTTPException(status_code=401, detail="Identifiants invalides")
 
-    access_token = create_access_token(data={"sub": user.email},expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token = create_access_token(data={"sub": user.email},expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     refresh_token = create_refresh_token(data={"sub": user.email})
 
     return Token(
@@ -56,7 +57,7 @@ def verify_token_route(token: str = Depends(oauth2_scheme)):
         print(f"Token reçu: {token}")
         token_data = verify_token(token) 
         return {
-            "message": "Token valide ✅",
+            "message": "Token valide !",
             "email": token_data.email
         }
     except Exception:
