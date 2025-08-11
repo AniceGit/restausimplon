@@ -76,9 +76,4 @@ def remove_utilisateur(
     if current_user.role != "admin" and current_user.id != utilisateur_id:
         raise HTTPException(status_code=403, detail="Accès refusé")
 
-    # Soft delete : passer is_active à False
-    utilisateur.is_active = False
-    session.add(utilisateur)
-    session.commit()
-    session.refresh(utilisateur)
-    return utilisateur
+    return delete_utilisateur(utilisateur_id, session)
