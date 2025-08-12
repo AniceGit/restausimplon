@@ -1,13 +1,6 @@
 FROM postgres:16
 
-# Variables d'environnement par défaut
+#Variables d'environnement par défaut (à mettre dans le .env plus tard)
 ENV POSTGRES_USER=myuser \
     POSTGRES_PASSWORD=mypassword \
     POSTGRES_DB=restausimplon
-
-# Copie d'un script SQL pour init la base
-# Sscript init.sql dans un dossier initdb/
-# COPY initdb/ /docker-entrypoint-initdb.d/
-
-# Les scripts placés dans /docker-entrypoint-initdb.d/
-# sont exécutés automatiquement lors du premier démarrage
