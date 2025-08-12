@@ -1,15 +1,23 @@
-FROM python:alpine3.21
+# Utilise une image officielle Python légère
+FROM python:3.12-slim
 
+# Définit le dossier de travail dans le conteneur
 WORKDIR /app
 
-COPY requirements.txt ./
+# Copie les fichiers requirements.txt dans le conteneur
+COPY requirements.txt .
 
+# Installe les dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# Copie tout le code de l'application dans le conteneur
+COPY ./app ./app
 
-COPY ../.env ./
+# Copie le fichier .env (si tu veux l'utiliser directement dans le conteneur)
+COPY .env .
 
-EXPOSE 80
+# Expose le port sur lequel l'API tournera
+EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
+# Commande pour lancer l'application avec reload (utile en dev)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
