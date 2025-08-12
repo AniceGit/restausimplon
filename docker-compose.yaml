@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: stephane
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: dataplongre
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./dump_postgre.sql:/docker-entrypoint-initdb.d/dump_postgre.sql
+    restart: unless-stopped
+volumes:
+  postgres_data:
