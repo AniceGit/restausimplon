@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app ./app
 
 #Copie le fichier .env (pour l'utiliser directement dans le conteneur)
-COPY .env .
+# COPY .env .
 
 #port de l'api
 EXPOSE 8000
