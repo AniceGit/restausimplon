@@ -3,6 +3,7 @@ services:
     image: postgres:16.9-alpine   # image officielle
     container_name: compose_postgres_container
     restart: always
+    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -11,6 +12,7 @@ services:
       - mon_network
     volumes:
       - mon_volume:/var/lib/postgresql/data
+      - ./app/scripts/init_app_user_postgres.sql:/docker-entrypoint-initdb.d/init_app_user_postgres.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -23,6 +25,7 @@ services:
     image: slehucher/restausimplon_api_image:1.1.1
     container_name: compose_api_fastapi_container
     restart: always
+    env_file: .env
     depends_on:
       - compose_postgres
     ports:
@@ -33,6 +36,7 @@ services:
   faker:
     image: slehucher/restausimplon_api_image:1.1.1
     container_name: restau_faker
+    env_file: .env
     command: python -m app.scripts.fake_data
     depends_on:
       compose_postgres:

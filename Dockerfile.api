@@ -14,10 +14,28 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app ./app
 
 #Copie le fichier .env (pour l'utiliser directement dans le conteneur)
-COPY .env .
+# COPY .env .
 
 #port de l'api
 EXPOSE 8000
+
+#variables pour la création de l'utilisateur non-root
+ARG GROUPNAME=restausimplon-group
+ARG USERNAME=restausimplon-app-user
+#ID du groupe
+ARG USER_GID=1000
+#ID de l'utilisateur
+ARG USER_UID=1000
+
+#Création du groupe et de l'utilisateur non-root
+RUN addgroup -g $USER_GID -S $GROUPNAME \
+    && adduser -u $USER_UID -S -G $GROUPNAME $USERNAME
+
+#Déclarer le nouvel utilisateur propriétaire du dossier app
+RUN chown -R $USERNAME:$GROUPNAME /app
+
+#Choisir le nouvel utilisateur comme utilisateur par défaut
+USER $USERNAME
 
 #Commande pour lancer l'application reload
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
