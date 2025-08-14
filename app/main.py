@@ -23,7 +23,6 @@ app.include_router(ligne_de_commande.router)
 app.include_router(auth.router)
 
 
-
 @app.get("/")
 def root():
     return {"message": "Bienvenue sur l’API RestauSimplon"}
