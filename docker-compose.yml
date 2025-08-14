@@ -10,7 +10,16 @@ services:
     networks:
       - mon_network
     volumes:
-      - mon_volume:/var/lib/postgresql/data
+      # Volume pour les données PostgreSQL
+      - postgres_data:/var/lib/postgresql/data
+      # Volume pour les scripts d'initialisation
+      - postgres_init_scripts:/docker-entrypoint-initdb.d:ro
+      # Volume pour les configurations personnalisées
+      - postgres_config:/etc/postgresql
+      # Volume pour les logs PostgreSQL
+      - postgres_logs:/var/log/postgresql
+      # Volume pour les sauvegardes
+      - postgres_backups:/var/backups/postgresql
     ports:
       - "5432:5432"
     healthcheck:
@@ -43,10 +52,39 @@ services:
     networks:
       - mon_network
 
+  postgres_backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.backup
+    container_name: postgres_backup_service
+    depends_on:
+      compose_postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: compose_postgres
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}  
+    volumes:
+      - postgres_backups:/var/backups/postgresql
+    command: >
+      sh -c "
+        echo '${BACKUP_SCHEDULE} /usr/local/bin/backup/backup.sh' > /etc/crontabs/root &&
+        crond -f
+      "
+    networks:
+      - mon_network
+    restart: unless-stopped
+
 networks:
   mon_network:
     driver: bridge
 
 volumes:
-  mon_volume:
+  postgres_data:
+  postgres_backups:
+  postgres_init_scripts:
+  postgres_config:
+  postgres_logs:
 
