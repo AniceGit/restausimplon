@@ -1,8 +1,1 @@
 FROM postgres:16
-
-# Variables d'environnement par défaut
-ENV POSTGRES_USER=myuser \
-    POSTGRES_PASSWORD=mypassword \
-    POSTGRES_DB=restausimplon
-
-#VOLUME  ["/var/lib/postgresql/data"]
