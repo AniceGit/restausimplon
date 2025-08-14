@@ -30,7 +30,7 @@ def create_fake_data():
         for cat in categories:
             existing = session.exec(select(Categorie).where(Categorie.nom == cat["nom"])).first()
             if not existing:
-                session.add(Categorie(name=cat["nom"], description=cat["description"]))
+                session.add(Categorie(nom=cat["nom"], description=cat["description"]))
         session.commit()
 
         # Créer produits
