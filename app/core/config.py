@@ -9,12 +9,12 @@ class Settings(BaseSettings):
     POSTGRES_USER : str
     POSTGRES_PASSWORD : str
     POSTGRES_DB : str
-    POSTGRES_DATA_PATH= str
-    POSTGRES_CONFIG_PATH= str
-    POSTGRES_LOGS_PATH= str
-    POSTGRES_BACKUPS_PATH= str
-    BACKUP_SCHEDULE= str
-    BACKUP_RETENTION_DAYS= int
+    POSTGRES_DATA_PATH : str
+    POSTGRES_CONFIG_PATH : str
+    POSTGRES_LOGS_PATH : str
+    POSTGRES_BACKUPS_PATH : str
+    BACKUP_SCHEDULE : str
+    BACKUP_RETENTION_DAYS : int
 
     model_config = SettingsConfigDict(
         env_file=".env",
