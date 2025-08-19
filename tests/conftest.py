@@ -1,13 +1,15 @@
 import pytest
-from sqlmodel import Session, create_engine, SQLModel
+
 from importlib import reload
 import warnings
 from app.models.utilisateur import Utilisateur
 
 # Crée une base SQLite éphémère pour chaque test
-@pytest.fixture(scope="session")
+@pytest.fixture
 def session():
-    engine = create_engine("sqlite:///:memory:", echo=False)
+    from sqlmodel import Session, create_engine
+    from app.models.utilisateur import SQLModel 
+    engine = create_engine("sqlite:///:memory:", echo=False, connect_args={"check_same_thread": False})
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         yield session
