@@ -11,19 +11,21 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11"]
-    env:
-        SECRET_KEY=test_secret_key
-        ALGORITHM=HS256
-        ACCESS_TOKEN_EXPIRE_MINUTES=15
-        REFRESH_TOKEN_EXPIRE_DAYS=7
 
-        POSTGRES_USER=test_user
-        POSTGRES_PASSWORD=test_password
-        POSTGRES_DB=test_db
-        POSTGRES_DATA_PATH=/tmp/data
-        POSTGRES_CONFIG_PATH=/tmp/config
-        POSTGRES_LOGS_PATH=/tmp/logs
-        POSTGRES_BACKUPS_PATH=/tmp/backups
+    env:
+      SECRET_KEY: test_secret_key
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: test_db
+      POSTGRES_DATA_PATH: /tmp/data
+      POSTGRES_CONFIG_PATH: /tmp/config
+      POSTGRES_LOGS_PATH: /tmp/logs
+      POSTGRES_BACKUPS_PATH: /tmp/backups
+
     steps:
       # 1️⃣ Checkout du repo
       - name: Checkout repository
@@ -46,20 +48,19 @@ jobs:
       # 4️⃣ Debug : vérifier que tout est installé
       - name: Debug environment
         run: |
-          python -m pip show coverage
-          python -m pip show pytest-cov
-          python -m pip show pytest
-          python -m pip show sqlmodel
+          python -m pip show coverage || echo "coverage NOT installed"
+          python -m pip show pytest-cov || echo "pytest-cov NOT installed"
+          python -m pip show pytest || echo "pytest NOT installed"
+          python -m pip show sqlmodel || echo "sqlmodel NOT installed"
 
       # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
-        if: always()  # Toujours exécuter même si les étapes précédentes échouent
         run: |
           pytest --cov=app --cov-report=xml --cov-report=term-missing
 
       # 6️⃣ Upload du rapport de couverture dans GitHub
       - name: Upload coverage to GitHub summary
-        if: success()
+        if: always()
         run: |
           echo "### Coverage Report" >> $GITHUB_STEP_SUMMARY
           coverage report -m >> $GITHUB_STEP_SUMMARY
