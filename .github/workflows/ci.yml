@@ -2,7 +2,10 @@ name: CI - Tests API
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: 
+      - main
+      - develop
+      - 'feature/ci-cd-anice'
   pull_request:
 
 jobs:
