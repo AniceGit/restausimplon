@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     BACKUP_SCHEDULE : str
     BACKUP_RETENTION_DAYS : int
 
+
+    
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8"
