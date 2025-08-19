@@ -13,30 +13,33 @@ jobs:
         python-version: ["3.11"]
 
     steps:
+      # 1️⃣ Checkout du repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Installation de Python
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
+      # 3️⃣ Installation des dépendances
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest pytest-cov coverage
+          pip install pytest pytest-cov coverage sqlmodel
 
+      # 4️⃣ Debug : vérifier que tout est installé
       - name: Debug environment
-        env:
-          DATABASE_URL: "sqlite:///:memory:"
         run: |
-          echo "DATABASE_URL=$DATABASE_URL"
-          python -m pip show coverage || echo "coverage NOT installed"
-          python -m pip show pytest-cov || echo "pytest-cov NOT installed"
-          python -m pip show pytest || echo "pytest NOT installed"
+          python -m pip show coverage
+          python -m pip show pytest-cov
+          python -m pip show pytest
+          python -m pip show sqlmodel
 
+      # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
         env:
           SECRET_KEY: test_secret_key
@@ -47,6 +50,7 @@ jobs:
         run: |
           pytest --cov=app --cov-report=xml --cov-report=term-missing
 
+      # 6️⃣ Upload du rapport de couverture dans GitHub
       - name: Upload coverage to GitHub summary
         if: success()
         run: |
