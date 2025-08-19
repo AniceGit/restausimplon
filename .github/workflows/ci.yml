@@ -30,7 +30,7 @@ jobs:
 
       - name: Debug environment
         env:
-          DATABASE_URL: sqlite:///:memory:
+          DATABASE_URL: "sqlite:///:memory:"
         run: |
           echo "DATABASE_URL=$DATABASE_URL"
           python -m pip show coverage || echo "coverage NOT installed"
