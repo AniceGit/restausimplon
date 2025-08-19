@@ -44,6 +44,8 @@ jobs:
         run: |
           # Charger les variables d'environnement
           export $(grep -v '^#' .env.test | xargs)
+          echo $(grep -v '^#' .env.test | xargs)
+          # Lancer les tests
           pytest --cov=app --cov-report=xml --cov-report=term-missing
 
       # 6️⃣ Upload du rapport de couverture dans GitHub
