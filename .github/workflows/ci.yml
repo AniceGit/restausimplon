@@ -42,7 +42,7 @@ jobs:
       # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
         run: |
-          python -c "print('Running tests...')"
+          python -c "import os; print(os.environ.get('DATABASE_URL'))"
 
 
       # 6️⃣ Upload du rapport de couverture dans GitHub
