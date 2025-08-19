@@ -5,12 +5,12 @@ import warnings
 from app.models.utilisateur import Utilisateur
 
 # Crée une base SQLite éphémère pour chaque test
-@pytest.fixture
+@pytest.fixture(scope="session")
 def session():
-    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    engine = create_engine("sqlite:///:memory:", echo=False)
     SQLModel.metadata.create_all(engine)
-    with Session(engine) as s:
-        yield s
+    with Session(engine) as session:
+        yield session
 
 # Donne un Settings réinitialisé après patch des envs
 @pytest.fixture
