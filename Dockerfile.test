@@ -28,3 +28,5 @@ COPY . /app
 # Installer les dépendances de test
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir pytest
+
+CMD ["pytest", "-v", "-ra", "--tb=short", "--cov=app", "--cov-report=term-missing"]
