@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["main, develop, ste-branch, ste-test"]
+    branches: ["main", "develop", "ste-branch", "ste-test"]
   pull_request:
 
 jobs:
