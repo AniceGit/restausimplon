@@ -11,9 +11,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11"]
-
-    env:
-      DATABASE_URL: "test.db"
+        
     steps:
       # 1️⃣ Checkout du repo
       - name: Checkout repository
@@ -43,6 +41,8 @@ jobs:
 
       # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
+        with:
+          filename: .env.test
         run: |
           python -c "import os; print(os.environ.get('DATABASE_URL'))"
 
