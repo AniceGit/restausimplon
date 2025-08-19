@@ -1,6 +1,7 @@
 import pytest
 from fastapi import HTTPException
 from app.models.produit import Produit
+from sqlmodel import Session, select
 from app.crud.produit import (
     get_all_produits,
     creer_produit,
@@ -43,22 +44,22 @@ def test_get_all_produits(session, produit_existant):
 def test_modification_produit(session, produit_existant):
     updated = modification_produit(
         session, 
-        {"id": produit_existant.id},  # dict contenant l'id
+        produit_existant.id, 
         {"prix": 20.0}
     )
     assert updated.prix == 20.0
 
-def test_modification_produit_inexistant(session):
+def test_modification_produit_inexistant(session: Session):
     with pytest.raises(HTTPException) as excinfo:
-        modification_produit(session, {"id": 999}, {"prix": 20.0})
+        modification_produit(session, 999, {"prix": 20.0})
     assert excinfo.value.status_code == 404
 
 def test_suppression_produit(session, produit_existant):
-    suppression_produit(session, {"id": produit_existant.id})
+    suppression_produit(session, produit_existant.id)
     produits = get_all_produits(session)
     assert all(p.id != produit_existant.id for p in produits)
 
 def test_suppression_produit_inexistant(session):
     with pytest.raises(HTTPException) as excinfo:
-        suppression_produit(session, {"id": 999})
+        suppression_produit(session, 999)
     assert excinfo.value.status_code == 404
