@@ -53,8 +53,9 @@ jobs:
 
       # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
+        if: always()  # Toujours exécuter même si les étapes précédentes échouent
         run: |
-          #pytest --cov=app --cov-report=xml --cov-report=term-missing
+          pytest --cov=app --cov-report=xml --cov-report=term-missing
 
       # 6️⃣ Upload du rapport de couverture dans GitHub
       - name: Upload coverage to GitHub summary
