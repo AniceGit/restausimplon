@@ -14,6 +14,19 @@ class CommandeStatusEnum(str, Enum):
     servie = "Servie"
 #Modèle table commande
 class Commande(SQLModel, table=True):
+    """
+    Modèle représentant une commande passée par un utilisateur.
+
+    Attributes:
+        id: Identifiant unique de la commande (clé primaire).
+        utilisateur_id: Identifiant de l'utilisateur ayant passé la commande.
+        date_commande: Date et heure de la commande.
+        statut: Statut actuel de la commande, basé sur CommandeStatusEnum 
+                (préparation, prête, servie).
+        prix_total: Montant total de la commande.
+        utilisateur: Relation vers l'utilisateur ayant passé la commande.
+        lignes_commande: Liste des lignes de commande associées, avec suppression en cascade.
+    """
     id: Optional[int] = Field(gt=0, default=None, primary_key=True)
     utilisateur_id: int = Field(gt=0, foreign_key="utilisateur.id")
     date_commande: datetime

@@ -43,23 +43,36 @@ def test_get_all_produits(session, produit_existant):
 
 def test_modification_produit(session, produit_existant):
     updated = modification_produit(
-        session, 
-        produit_existant.id, 
-        {"prix": 20.0}
+        produit_existant.id,   # produit_id
+        {"prix": 20.0},        # produit_data
+        session                # session
     )
     assert updated.prix == 20.0
 
+
 def test_modification_produit_inexistant(session: Session):
     with pytest.raises(HTTPException) as excinfo:
-        modification_produit(session, 999, {"prix": 20.0})
+        modification_produit(
+            999,                # produit_id
+            {"prix": 20.0},     # produit_data
+            session             # session
+        )
     assert excinfo.value.status_code == 404
 
+
 def test_suppression_produit(session, produit_existant):
-    suppression_produit(session, produit_existant.id)
+    suppression_produit(
+        produit_existant.id,   # produit_id
+        session                # session
+    )
     produits = get_all_produits(session)
     assert all(p.id != produit_existant.id for p in produits)
 
+
 def test_suppression_produit_inexistant(session):
     with pytest.raises(HTTPException) as excinfo:
-        suppression_produit(session, 999)
+        suppression_produit(
+            999,                # produit_id
+            session             # session
+        )
     assert excinfo.value.status_code == 404
