@@ -23,6 +23,12 @@ def fresh_settings(monkeypatch):
     monkeypatch.setenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15")
     monkeypatch.setenv("REFRESH_TOKEN_EXPIRE_DAYS", "7")
     monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
+    monkeypatch.setenv("POSTGRES_DATA_PATH", "/tmp/data")
+    monkeypatch.setenv("POSTGRES_CONFIG_PATH", "/tmp/config")
+    monkeypatch.setenv("POSTGRES_LOGS_PATH", "/tmp/logs")
+    monkeypatch.setenv("POSTGRES_BACKUPS_PATH", "/tmp/backups")
+    monkeypatch.setenv("BACKUP_SCHEDULE", "0 0 * * *")
+    monkeypatch.setenv("BACKUP_RETENTION_DAYS", "7")
 
     import app.core.config as config
     reload(config)  # re-crée settings
