@@ -11,7 +11,19 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11"]
+    env:
+        SECRET_KEY=test_secret_key
+        ALGORITHM=HS256
+        ACCESS_TOKEN_EXPIRE_MINUTES=15
+        REFRESH_TOKEN_EXPIRE_DAYS=7
 
+        POSTGRES_USER=test_user
+        POSTGRES_PASSWORD=test_password
+        POSTGRES_DB=test_db
+        POSTGRES_DATA_PATH=/tmp/data
+        POSTGRES_CONFIG_PATH=/tmp/config
+        POSTGRES_LOGS_PATH=/tmp/logs
+        POSTGRES_BACKUPS_PATH=/tmp/backups
     steps:
       # 1️⃣ Checkout du repo
       - name: Checkout repository
@@ -41,11 +53,8 @@ jobs:
 
       # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
-        with:
-          file_name: .env.test
         run: |
-          python -c "import os; print(os.environ.get('DATABASE_URL'))"
-
+          #pytest --cov=app --cov-report=xml --cov-report=term-missing
 
       # 6️⃣ Upload du rapport de couverture dans GitHub
       - name: Upload coverage to GitHub summary
