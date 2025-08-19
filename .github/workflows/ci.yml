@@ -12,6 +12,8 @@ jobs:
       matrix:
         python-version: ["3.11"]
 
+    env:
+      DATABASE_URL: "test.db"
     steps:
       # 1️⃣ Checkout du repo
       - name: Checkout repository
