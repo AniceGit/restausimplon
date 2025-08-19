@@ -1,0 +1,19 @@
+# Dockerfile.test
+FROM restausimplon_api_image
+
+# Installer pytest et faker si besoin
+#on repasse en root
+USER root
+RUN pip install pytest pytest-cov pytest-clarity
+
+#on revient sur l'utilisateur normal par sécurité
+USER restausimplon-app-user
+
+# Copier le code + tests
+COPY ./tests ./tests
+
+ENV PYTHONPATH=/app
+
+# Commande par défaut
+# CMD ["pytest", "-v"]
+CMD ["pytest", "-v", "-ra", "--tb=short", "--cov=app", "--cov-report=term-missing"]
