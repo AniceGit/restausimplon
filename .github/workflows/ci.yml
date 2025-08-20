@@ -6,6 +6,7 @@ on:
       - main
       - develop
       - 'feature/ci-cd-anice'
+      - ste-test
   pull_request:
 
 jobs:
