@@ -63,7 +63,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST: compose_postgres
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
-      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS}
+
     volumes:
       - postgres_backups:/var/backups/postgresql
     command: >

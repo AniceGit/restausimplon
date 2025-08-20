@@ -1,5 +1,6 @@
 from sqlmodel import Session, select
 from app.models.produit import Produit
+from app.schemas.produit import ProduitCreate
 from typing import List, Optional
 from fastapi import HTTPException
 
@@ -16,18 +17,18 @@ def get_all_produits(session: Session) -> List[Produit]:
     statement = select(Produit)
     return session.exec(statement).all()
 
-def creer_produit(produit, session: Session):
+def creer_produit(produit: ProduitCreate, session: Session):
     """
     Crée un nouveau produit dans la base de données.
 
     Args:
-        produit: Un objet représentant les données du produit à créer.
+        produit (ProduitCreate): Données du produit à créer.
         session (Session): Une session de base de données SQLModel pour ajouter le produit.
 
     Returns:
         Produit: Le produit nouvellement créé et ajouté à la base de données.
     """
-    produit_data = produit.model_dump()
+    produit_data = produit.model_dump()  # ou produit.dict() si Pydantic V1
     db_produit = Produit(**produit_data)
     session.add(db_produit)
     session.commit()

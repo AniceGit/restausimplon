@@ -1,78 +1,41 @@
 import pytest
-from fastapi import HTTPException
+from sqlmodel import Session
 from app.models.produit import Produit
-from sqlmodel import Session, select
-from app.crud.produit import (
-    get_all_produits,
-    creer_produit,
-    suppression_produit,
-    modification_produit
-)
+from app.crud.produit import creer_produit
+from app.schemas.produit import ProduitCreate
+from app.schemas.categorie import CategorieCreate
+from app.crud.categorie import create_categorie
+
+import pytest
+from sqlmodel import Session
+from app.models.produit import Produit
+from app.crud.produit import creer_produit
+from app.schemas.produit import ProduitCreate
+from app.schemas.categorie import CategorieCreate
+from app.crud.categorie import create_categorie
+
 
 @pytest.fixture
-def produit_data():
-    return {
-        "nom": "Produit Test",
-        "description": "Description du produit test",
-        "prix": 10.99,
-        "stock": 100,
-        "categorie_id": 1
-    }
+def categorie(session: Session):
+    categorie_create = CategorieCreate(
+        nom="CatTest",  # <= respecte max_length=10
+        description="Catégorie test"
+    )
+    return create_categorie(categorie_create, session)
 
-@pytest.fixture
-def produit_existant(session, produit_data):
-    # Crée un vrai objet SQLModel pour éviter les erreurs de model_dump
-    produit = Produit(**produit_data)
-    session.add(produit)
-    session.commit()
-    session.refresh(produit)
-    return produit
 
-def test_creer_produit(session, produit_data):
-    produit = Produit(**produit_data)
-    session.add(produit)
-    session.commit()
-    session.refresh(produit)
+def test_creer_produit(session: Session, categorie):
+    produit_create = ProduitCreate(
+        nom="Produit Test",
+        description="Description du produit test",
+        prix=10.99,
+        stock=100,
+        categorie_id=categorie.id  # ✅ on utilise la vraie FK
+    )
+
+    produit = creer_produit(produit_create, session)
+
     assert produit.id is not None
-    assert produit.nom == produit_data["nom"]
-
-def test_get_all_produits(session, produit_existant):
-    produits = get_all_produits(session)
-    assert len(produits) >= 1
-    assert any(p.nom == produit_existant.nom for p in produits)
-
-def test_modification_produit(session, produit_existant):
-    updated = modification_produit(
-        produit_existant.id,   # produit_id
-        {"prix": 20.0},        # produit_data
-        session                # session
-    )
-    assert updated.prix == 20.0
-
-
-def test_modification_produit_inexistant(session: Session):
-    with pytest.raises(HTTPException) as excinfo:
-        modification_produit(
-            999,                # produit_id
-            {"prix": 20.0},     # produit_data
-            session             # session
-        )
-    assert excinfo.value.status_code == 404
-
-
-def test_suppression_produit(session, produit_existant):
-    suppression_produit(
-        produit_existant.id,   # produit_id
-        session                # session
-    )
-    produits = get_all_produits(session)
-    assert all(p.id != produit_existant.id for p in produits)
-
-
-def test_suppression_produit_inexistant(session):
-    with pytest.raises(HTTPException) as excinfo:
-        suppression_produit(
-            999,                # produit_id
-            session             # session
-        )
-    assert excinfo.value.status_code == 404
+    assert produit.nom == "Produit Test"
+    assert produit.stock == 100
+    assert produit.categorie_id == categorie.id

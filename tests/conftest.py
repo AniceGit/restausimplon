@@ -2,9 +2,6 @@ import os
 import pytest
 from sqlmodel import SQLModel, create_engine, Session
 
-from app.models.utilisateur import Utilisateur 
-from app.schemas.utilisateur import UtilisateurCreate
-
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://test_user:test_password@localhost:5432/test_db")
 
 engine = create_engine(DATABASE_URL, echo=False)
