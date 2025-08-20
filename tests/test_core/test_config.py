@@ -7,11 +7,11 @@ def test_settings_loading(fresh_settings):
     assert cfg.ALGORITHM == "HS256"
     assert cfg.ACCESS_TOKEN_EXPIRE_MINUTES == 15
     assert cfg.REFRESH_TOKEN_EXPIRE_DAYS == 7
-    assert cfg.DATABASE_URL == "sqlite:///:memory:"
+    assert cfg.DATABASE_URL == "postgresql://test_user:test_password@compose_postgres_test:5432/test_db"
 
 def test_settings_missing_secret_key(monkeypatch):
     monkeypatch.delenv("SECRET_KEY", raising=False)
-    monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
+    monkeypatch.setenv("DATABASE_URL", "postgresql://test_user:test_password@compose_postgres_test:5432/test_db")
     cfg = Settings()
     # Vérifie qu'on retombe sur la valeur par défaut (ex: "super-secret-key")
     assert cfg.SECRET_KEY == "super-secret-key"

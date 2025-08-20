@@ -11,7 +11,7 @@ from app.crud.utilisateur import (
     delete_utilisateur,
 )
 
-@pytest.fixture
+#@pytest.fixture
 def utilisateur_data():
     return UtilisateurCreate(
         email="test@example.com",
