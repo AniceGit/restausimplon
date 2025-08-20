@@ -1,19 +1,22 @@
-import os
+#Simuler un client d'API
 import pytest
-from sqlmodel import SQLModel, create_engine, Session
+from app.schemas.categorie import CategorieCreate
+from sqlmodel import Session, SQLModel, create_engine
+import os
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://test_user:test_password@localhost:5432/test_db")
+DATABASE_URL = os.getenv("DATABASE_URL") 
 
-engine = create_engine(DATABASE_URL, echo=False)
-
-@pytest.fixture(scope="function", autouse=True)
-def setup_database():
-    SQLModel.metadata.drop_all(engine)
+@pytest.fixture(scope="session")
+def engine():    
+    engine = create_engine(DATABASE_URL, echo=True)
     SQLModel.metadata.create_all(engine)
-    yield
-    SQLModel.metadata.drop_all(engine) 
+    return engine
 
-@pytest.fixture(scope="function")
-def session():
-    with Session(engine) as s:
-        yield s
+@pytest.fixture
+def session(engine):
+    with Session(engine) as session:
+        yield session
+
+@pytest.fixture
+def categorie_fixture_create():
+    return CategorieCreate(nom="test", description="ceci est un test")
