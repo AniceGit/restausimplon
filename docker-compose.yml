@@ -41,7 +41,6 @@ services:
   faker:
     image: restausimplon_api_image
     container_name: restau_faker
-    restart: always
     env_file: .env
     command: python -m app.scripts.fake_data
     depends_on:
