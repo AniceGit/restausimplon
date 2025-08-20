@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -45,6 +46,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pytest pytest-cov coverage sqlmodel
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       # 4️⃣ Debug : vérifier que tout est installé
       - name: Debug environment
         run: |
@@ -52,6 +56,11 @@ jobs:
           python -m pip show pytest-cov || echo "pytest-cov NOT installed"
           python -m pip show pytest || echo "pytest NOT installed"
           python -m pip show sqlmodel || echo "sqlmodel NOT installed"
+
+      - name: Run docker-compose tests
+        run: |
+          docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from tests
+          docker compose -f docker-compose.test.yml down -v
 
       # 5️⃣ Lancer les tests avec couverture
       - name: Run tests with coverage
@@ -64,3 +73,9 @@ jobs:
         run: |
           echo "### Coverage Report" >> $GITHUB_STEP_SUMMARY
           coverage report -m >> $GITHUB_STEP_SUMMARY
+
+
+
+
+
+
