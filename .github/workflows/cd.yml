@@ -1,4 +1,4 @@
-name: CD - Build & Push Docker image API
+name: CD -- Build & Push Docker image API
 
 on:
   push:
