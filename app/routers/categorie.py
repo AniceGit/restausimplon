@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from typing import List
 
-
 from app.database import get_session
 from app.schemas.categorie import CategorieCreate
 from app.schemas.categorie import CategorieRead
@@ -19,6 +18,22 @@ from app.crud.categorie import delete_categorie_by_id
 from app.core.security import get_current_user
 from app.models.utilisateur import Utilisateur
 
+"""
+Module de gestion des catégories de menu via API REST.
+
+Ce module fournit des routes pour créer, lire, mettre à jour et supprimer des catégories.
+Certaines opérations sont restreintes aux utilisateurs ayant le rôle "admin" ou "employe".
+
+Routes disponibles :
+- POST /categories/ : Crée une nouvelle catégorie (admin/employe seulement).
+- GET /categories/ : Récupère la liste de toutes les catégories.
+- GET /categories/{id} : Récupère une catégorie par son identifiant.
+- PATCH /categories/ : Met à jour une catégorie existante (admin/employe seulement).
+- DELETE /categories/ : Supprime une catégorie existante (admin/employe seulement).
+
+Chaque route utilise SQLModel pour l'accès à la base de données via `Session`.
+L'authentification et l'autorisation sont gérées par la dépendance `get_current_user`.
+"""
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 

@@ -13,6 +13,21 @@ class RoleEnum(str, Enum):
     client = "client"
 #Modèle table utilisateur
 class Utilisateur(SQLModel, table=True):
+    """
+    Modèle représentant un utilisateur de l'application, pouvant être un client, un employé ou un administrateur.
+
+    Attributes:
+        id (int, optional): Identifiant unique de l'utilisateur (clé primaire).
+        nom (str): Nom de l'utilisateur.
+        prenom (str): Prénom de l'utilisateur.
+        adresse (str): Adresse postale de l'utilisateur.
+        telephone (str): Numéro de téléphone de l'utilisateur.
+        email (str): Adresse e-mail unique de l'utilisateur.
+        motdepasse (str): Mot de passe haché de l'utilisateur.
+        role (RoleEnum): Rôle de l'utilisateur dans l'application (admin, employe, client).
+        is_active (bool): Indique si l'utilisateur est actif (par défaut True).
+        commandes (List[Commande]): Liste des commandes associées à l'utilisateur.
+    """
     id: Optional[int] = Field(default=None, primary_key=True)
     nom: str
     prenom: str

@@ -14,6 +14,23 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/register", response_model=UtilisateurRead)
 def register(utilisateur_data: UtilisateurCreate,session: Session = Depends(get_session)):
+    """
+    Enregistre un nouvel utilisateur.
+
+    Vérifie que l'email fourni n'est pas déjà enregistré dans la base de données. 
+    Si l'email est unique, crée l'utilisateur avec le mot de passe haché et l'ajoute à la base de données.
+
+    Args:
+        utilisateur_data (UtilisateurCreate): Données de l'utilisateur à créer.
+        session (Session, optional): Session SQLModel pour la base de données. Par défaut, dépend de get_session.
+
+    Raises:
+        HTTPException: 
+            - 400 si l'email est déjà utilisé.
+
+    Returns:
+        UtilisateurRead: L'utilisateur créé.
+    """
     existing_user = session.exec(select(Utilisateur).where(Utilisateur.email == utilisateur_data.email)).first()
 
     if existing_user:
@@ -37,6 +54,23 @@ def register(utilisateur_data: UtilisateurCreate,session: Session = Depends(get_
 
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(),session: Session = Depends(get_session)):
+    """
+    Authentifie un utilisateur et retourne un access token et refresh token.
+
+    Vérifie que l'email et le mot de passe fournis correspondent à un utilisateur existant.
+    Génère un JWT d'accès et un JWT de rafraîchissement.
+
+    Args:
+        form_data (OAuth2PasswordRequestForm, optional): Formulaire contenant 'username' (email) et 'password'.
+        session (Session, optional): Session SQLModel pour la base de données. Par défaut, dépend de get_session.
+
+    Raises:
+        HTTPException: 
+            - 401 si les identifiants sont invalides.
+
+    Returns:
+        Token: Objet contenant l'access token, le type de token, et le refresh token.
+    """
 
     user = session.exec(select(Utilisateur).where(Utilisateur.email == form_data.username)).first()
     if not user or not verify_password(form_data.password, user.motdepasse):
@@ -53,6 +87,22 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(),session: Session = De
 
 @router.get("/verify-token")
 def verify_token_route(token: str = Depends(oauth2_scheme)):
+    """
+    Vérifie la validité d'un token JWT.
+
+    Cette route décode le token JWT fourni via OAuth2PasswordBearer et renvoie l'email de l'utilisateur si le token est valide.
+    Si le token est invalide ou expiré, une exception est levée.
+
+    Args:
+        token (str, optional): Token JWT à vérifier. Par défaut, fourni par le header Authorization.
+
+    Raises:
+        HTTPException:
+            - 401 si le token est invalide ou expiré.
+
+    Returns:
+        dict: Message de succès et email associé au token.
+    """
     try:
         print(f"Token reçu: {token}")
         token_data = verify_token(token) 
