@@ -14,6 +14,43 @@ from app.services.commande import create_commande_with_lignes_and_utilisateur, g
 from app.core.security import get_current_user
 from app.models.utilisateur import Utilisateur
 
+"""
+Module de gestion des commandes via API REST.
+
+Ce module fournit des routes pour créer, lire, mettre à jour et supprimer des commandes,
+ainsi que pour filtrer les commandes par utilisateur ou par date.  
+L'accès aux routes est contrôlé en fonction du rôle de l'utilisateur (admin, employe, client).
+
+Routes principales :
+- GET /commandes/ : Récupère toutes les commandes.  
+  - Admin/Employé : toutes les commandes.
+  - Client : uniquement ses propres commandes.
+  
+- GET /commandes/{commande_id} : Récupère une commande par son ID.
+  - Admin/Employé : n'importe quelle commande.
+  - Client : uniquement sa propre commande.
+
+- GET /commandes/utilisateur/{utilisateur_id} : Récupère les commandes d'un utilisateur.
+  - Admin/Employé : toutes les commandes de l'utilisateur.
+  - Client : uniquement ses propres commandes.
+
+- GET /commandes/date/{date_commande} : Récupère les commandes pour une date donnée.
+  - Admin/Employé : toutes les commandes de la date.
+  - Client : uniquement ses propres commandes de la date.
+
+- POST /commandes/lignes/ : Crée une nouvelle commande avec ses lignes de commande.
+  - Admin/Employé : peut créer pour n'importe quel utilisateur.
+  - Client : peut créer uniquement pour lui-même.
+
+- PUT /commandes/{commande_id} : Met à jour une commande existante.
+  - Seuls admin et employé peuvent modifier une commande.
+
+- DELETE /commandes/{commande_id} : Supprime une commande.
+  - Seuls admin et employé peuvent supprimer une commande.
+
+Chaque route utilise SQLModel pour l'accès à la base de données via `Session`.  
+L'authentification et l'autorisation sont gérées par la dépendance `get_current_user`.
+"""
 router = APIRouter(prefix="/commandes", tags=["Commandes"])
 
 #autorisation de tous lire si admin ou employé

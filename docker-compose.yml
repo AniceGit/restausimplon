@@ -1,6 +1,8 @@
+version: "3.9"
+
 services:
   compose_postgres:
-    image: postgres:16.9-alpine   # image officielle
+    image: postgres:16.9-alpine
     container_name: compose_postgres_container
     restart: always
     env_file: .env
@@ -11,7 +13,7 @@ services:
     networks:
       - mon_network
     volumes:
-      - mon_volume:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./app/scripts/init_app_user_postgres.sql:/docker-entrypoint-initdb.d/init_app_user_postgres.sql
     ports:
       - "5432:5432"
@@ -24,7 +26,7 @@ services:
   compose_api_fastapi:    
     image: slehucher/restausimplon_api_image:1.1.1
     container_name: compose_api_fastapi_container
-    restart: always
+    restart: unless-stopped
     env_file: .env
     depends_on:
       - compose_postgres
@@ -39,8 +41,33 @@ services:
     env_file: .env
     command: python -m app.scripts.fake_data
     depends_on:
-      compose_postgres:
-        condition: service_healthy
+      - compose_postgres
+    networks:
+      - mon_network
+
+  postgres_backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.backup
+    container_name: postgres_backup_service
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - compose_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: compose_postgres
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
+
+    volumes:
+      - postgres_backups:/var/backups/postgresql
+    command: >
+      sh -c "
+        echo '${BACKUP_SCHEDULE} /usr/local/bin/backup/backup.sh' > /etc/crontabs/root &&
+        crond -f
+      "
     networks:
       - mon_network
 
@@ -49,5 +76,5 @@ networks:
     driver: bridge
 
 volumes:
-  mon_volume:
-
+  postgres_data:
+  postgres_backups:
