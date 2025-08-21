@@ -23,11 +23,8 @@ services:
       timeout: 3s
       retries: 5
 
-  compose_api_fastapi:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    image: restausimplon_api_image
+  compose_api_fastapi:    
+    image: slehucher/restausimplon_api_image:1.1.2
     container_name: compose_api_fastapi_container
     restart: unless-stopped
     env_file: .env
@@ -39,7 +36,7 @@ services:
       - mon_network
 
   faker:
-    image: restausimplon_api_image
+    image: slehucher/restausimplon_api_image:1.1.2
     container_name: restau_faker
     env_file: .env
     command: python -m app.scripts.fake_data
