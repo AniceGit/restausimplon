@@ -24,7 +24,7 @@ services:
       retries: 5
 
   compose_api_fastapi:    
-    image: slehucher/restausimplon_api_image:1.1.2
+    image: anicedocker/restausimplon:latest
     container_name: compose_api_fastapi_container
     restart: unless-stopped
     env_file: .env
@@ -36,7 +36,7 @@ services:
       - mon_network
 
   faker:
-    image: slehucher/restausimplon_api_image:1.1.2
+    image: anicedocker/restausimplon:latest
     container_name: restau_faker
     env_file: .env
     command: python -m app.scripts.fake_data
