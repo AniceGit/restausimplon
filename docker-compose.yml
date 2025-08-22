@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  compose_postgres:
+    image: postgres:16.9-alpine
+    container_name: compose_postgres_container
+    restart: always
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - mon_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./app/scripts/init_app_user_postgres.sql:/docker-entrypoint-initdb.d/init_app_user_postgres.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  compose_api_fastapi:    
+    image: anicedocker/restausimplon:latest
+    container_name: compose_api_fastapi_container
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - compose_postgres
+    ports:
+      - "8000:8000"
+    networks:
+      - mon_network
+
+  faker:
+    image: anicedocker/restausimplon:latest
+    container_name: restau_faker
+    env_file: .env
+    command: python -m app.scripts.fake_data
+    depends_on:
+      - compose_postgres
+    networks:
+      - mon_network
+
+  postgres_backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.backup
+    container_name: postgres_backup_service
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - compose_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: compose_postgres
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
+
+    volumes:
+      - postgres_backups:/var/backups/postgresql
+    command: >
+      sh -c "
+        echo '${BACKUP_SCHEDULE} /usr/local/bin/backup/backup.sh' > /etc/crontabs/root &&
+        crond -f
+      "
+    networks:
+      - mon_network
+
+networks:
+  mon_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  postgres_backups:

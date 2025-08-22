@@ -1,0 +1,14 @@
+# Dockerfile.backup
+FROM postgres:16.9-alpine
+
+# Installer cron et les outils nécessaires
+RUN apk add --no-cache busybox-extras
+
+# Créer le répertoire pour le script de backup
+RUN mkdir -p /usr/local/bin/backup
+
+# Copier le script de backup
+COPY backup.sh /usr/local/bin/backup/backup.sh
+
+# Rendre le script exécutable
+RUN chmod +x /usr/local/bin/backup/backup.sh
