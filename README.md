@@ -36,6 +36,30 @@ Ouvrez votre terminal de VS Code ou votre invite de commandes et utilisez la com
 
 Après avoir cloné le dépôt, vous devez vous déplacer dans le dossier qui vient d'être créé pour pouvoir travailler sur le projet en utilisant la commande "cd restausimplon" dans votre terminal de VS Code.
 
+### Avec Docker:
+- Dans le fichier .env fourni, sélectionner le premier DATABASE_URL
+
+- Créer un premier docker compose afin de créer les images:
+```
+docker compose up
+```
+
+- supprimer ce docker compose avec la commande:
+```
+docker compose down
+```
+
+- sélectionner le second DATABASE_URL du fichier .env:
+
+- Créer un nouveau docker compose:
+```
+docker compose up
+```
+
+- Le projet est à présent lancé, un swagger est disponible à l'adresse suivante: \
+http://127.0.0.1:8000/docs
+
+### Sans docker :
 Le projet nécessite l'installation des dépendences pour pouvoir fonctionner. Ces dernières sont listées dans un fichier "requirements.txt" présent dans le dossier à la racine du projet. Pour ce faire, dans le terminal de VS Code de votre environnement virtuel, vous utilisez la commande suivante : "pip install -r requirements.txt".
 
 Une fois les dépendances installées, vous pouvez lancer le serveur Uvicorn avec la commande "uvicorn app.main:app --reload" dans votre terminal de VS Code. Un fichier "restausimplon.sql" sera créé dans le dossier à la racine du projet. Ensuite, sur votre navigateur web, vous tapez l'adresse URL suivante : http://127.0.0.1:8000/docs/ qui vous dirigera vers l'interface Swagger/OpenAPI de l'API RestauSimplon.
